@@ -1,0 +1,26 @@
+{
+  "name": "semaphore",
+  "version": "1.0.0",
+  "description": "A repository for learning and experimenting with the Semaphore protocol and its privacy-preserving applications.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pali101/Semaphore.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pali101/Semaphore/issues"
+  },
+  "homepage": "https://github.com/pali101/Semaphore#readme",
+  "dependencies": {
+    "@semaphore-protocol/group": "^4.5.0",
+    "@semaphore-protocol/identity": "^4.5.0",
+    "@semaphore-protocol/proof": "^4.5.0",
+    "ethers": "^6.13.4"
+  }
+}
