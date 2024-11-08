@@ -2,6 +2,7 @@ import { Identity } from "@semaphore-protocol/identity"
 import { Group } from "@semaphore-protocol/group"
 import { generateProof, verifyProof } from "@semaphore-protocol/proof"
 import { Wallet } from 'ethers';
+import { encodeBytes32String } from "ethers"
 import { SemaphoreSubgraph } from "@semaphore-protocol/data"
 
 async function main() {
@@ -37,6 +38,7 @@ async function main() {
     groupOffchain.addMember(identity2._commitment)
     groupOffchain.addMember(identity3._commitment)
     groupOffchain.addMember(identity4._commitment)
+    console.log(identity1._commitment, "Commitment 1")
     console.log(identity3._commitment, "Commitment 3")
     console.log(identity4._commitment, "Commitment 4")
 
@@ -45,8 +47,9 @@ async function main() {
     const scope = groupOffchain.root
     // console.log(scope)
     const message = '1000'
-
-    const proof = await generateProof(identity1, groupOffchain, message, scope)
+    const feedback = encodeBytes32String(message)
+    // feedback - onchain contract is encodeBytes32String(message), group Id is the group you're tryng to prove identity is a part of, points are generated via proof (convert them to int before sending to contract)
+    const proof = await generateProof(identity1, groupOffchain, feedback, '81')
     console.log(proof)
     // // console.log(JSON.stringify(proof).length)
 
@@ -60,6 +63,9 @@ async function main() {
     console.log(isMember)
     const verifiedProofs = await semaphoreSubgraph.getGroupValidatedProofs("81")
     console.log(verifiedProofs)
+
+    console.log(groupOffchain.generateMerkleProof(0))
+    groupOffchain.removeMember(0)
 }
 
 main()
@@ -68,3 +74,4 @@ main()
         console.error("Error:", error);
         process.exit(1);
     });
+
