@@ -2,42 +2,64 @@ import { Identity } from "@semaphore-protocol/identity"
 import { Group } from "@semaphore-protocol/group"
 import { generateProof, verifyProof } from "@semaphore-protocol/proof"
 import { Wallet } from 'ethers';
+import { SemaphoreSubgraph } from "@semaphore-protocol/data"
 
 async function main() {
-    const identity1 = new Identity(Wallet.createRandom().privateKey)
-    const identity2 = new Identity(Wallet.createRandom().privateKey)
+    const identity1 = new Identity("Bomb")
+    const identity2 = new Identity("Star")
+    const semaphoreSubgraph = new SemaphoreSubgraph("sepolia")
 
-    console.log(identity1._commitment)
+    console.log(identity1._commitment, "Commitment 1")
     // console.log(publicKey, commitment)
 
 
     // const identity2 = new Identity(privateKey)
-    console.log(identity2._commitment)
+    console.log(identity2._commitment, "Commitment 2")
 
     // const message = "Hello World"
     // const signature = identity1.signMessage(message)
     // console.log(signature)
     // console.log(Identity.verifySignature(message, signature, identity1.publicKey))
 
-    let members = [identity1._commitment, identity2._commitment]
+    // let members = [identity1._commitment.toString(), identity2._commitment.toString()]
+    // console.log(members)
+    const groupOnchain = await semaphoreSubgraph.getGroup("81")
+    console.log(groupOnchain)
+    const groupOffchain = new Group()
 
-    let group1 = new Group(members)
+    const { members } = await semaphoreSubgraph.getGroup("81", { members: true })
 
-    const identity3 = new Identity(Wallet.createRandom().privateKey)
-    const identity4 = new Identity(Wallet.createRandom().privateKey)
-    group1.addMember(identity3._commitment)
-    group1.addMember(identity4._commitment)
+    console.log(members)
 
-    // console.log(group1.generateMerkleProof(0))
+    const identity3 = new Identity('176-0-1-Star')
+    const identity4 = new Identity('176-1-1-Bomb')
+    groupOffchain.addMember(identity1._commitment)
+    groupOffchain.addMember(identity2._commitment)
+    groupOffchain.addMember(identity3._commitment)
+    groupOffchain.addMember(identity4._commitment)
+    console.log(identity3._commitment, "Commitment 3")
+    console.log(identity4._commitment, "Commitment 4")
 
-    const scope = group1.root
-    const message = 1000
+    // // // console.log(group1.generateMerkleProof(0))
 
-    const proof = await generateProof(identity1, group1, message, scope)
+    const scope = groupOffchain.root
+    // console.log(scope)
+    const message = '1000'
+
+    const proof = await generateProof(identity1, groupOffchain, message, scope)
     console.log(proof)
+    // // console.log(JSON.stringify(proof).length)
 
-    let v = await verifyProof(proof)
-    console.log(v)
+
+    // let v = await verifyProof(proof)
+    // console.log(v)
+    const isMember = await semaphoreSubgraph.isGroupMember(
+        "81",
+        "10879816846374803187782192184349638366142740911864759579429330054032172440051"
+    )
+    console.log(isMember)
+    const verifiedProofs = await semaphoreSubgraph.getGroupValidatedProofs("81")
+    console.log(verifiedProofs)
 }
 
 main()

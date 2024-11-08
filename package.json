@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/pali101/Semaphore#readme",
   "dependencies": {
+    "@openzeppelin/contracts": "^5.1.0",
+    "@semaphore-protocol/contracts": "^4.5.0",
+    "@semaphore-protocol/data": "^4.5.0",
     "@semaphore-protocol/group": "^4.5.0",
     "@semaphore-protocol/identity": "^4.5.0",
     "@semaphore-protocol/proof": "^4.5.0",
